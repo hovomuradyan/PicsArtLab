@@ -1,3 +1,4 @@
+# This script was writen for PicsArtLab by Hovhannes Muradyan
 def compress_rle(content):
     compressed_content = ""
     start_symbol = ""
