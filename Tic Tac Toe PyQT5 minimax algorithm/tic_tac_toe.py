@@ -4,23 +4,15 @@ from PyQt5.QtWidgets import *
 import sys
 
 
-""" Soft has 2 game mode: 
-Easy - work with random choosing from available cells , 
-Hard - working with minimax best choosing algorithm  """
-
 class firstWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         uic.loadUi("design1.ui", self)
         self.setWindowIcon(QtGui.QIcon('txeturka.png'))
-        self.easyButtonX = self.findChild(QPushButton, "pushButton_1")
-        self.easyButtonO = self.findChild(QPushButton, "pushButton_3")
-        self.hardButtonX = self.findChild(QPushButton, "pushButton_2")
-        self.hardButtonO = self.findChild(QPushButton, "pushButton_4")
-        self.easyButtonX.clicked.connect(self.openEasyMode)
-        self.hardButtonX.clicked.connect(self.openHardMode)
-        self.easyButtonO.clicked.connect(self.openEasyMode)
-        self.hardButtonO.clicked.connect(self.openHardMode)
+        self.easyButton = self.findChild(QPushButton, "pushButton_1")
+        self.hardButton = self.findChild(QPushButton, "pushButton_2")
+        self.easyButton.clicked.connect(self.openEasyMode)
+        self.hardButton.clicked.connect(self.openHardMode)
         self.show()
 
     def openEasyMode(self):
@@ -340,6 +332,3 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     UIWindow = firstWindow()
     app.exec_()
-
-    
- # Made by Hovhannes Muradyan for PicsArtLab
