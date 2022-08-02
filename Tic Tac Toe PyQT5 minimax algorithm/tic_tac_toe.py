@@ -11,6 +11,7 @@ class firstWindow(QMainWindow):
         uic.loadUi("design1.ui", self)  # initializing design for mode choosing menu
         self.setFixedWidth(400)
         self.setFixedHeight(500)
+        # This photo is logo, that going to be showen on only Windows system. Does not work on Linux and MacOS
         self.setWindowIcon(QtGui.QIcon('txeturka.png'))
         self.easyButton = self.findChild(QPushButton, "pushButton_1")
         self.hardButton = self.findChild(QPushButton, "pushButton_2")
