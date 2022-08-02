@@ -1,13 +1,16 @@
 import random
+import sys
 from PyQt5 import QtGui, QtTest, uic
 from PyQt5.QtWidgets import *
-import sys
 
 
 class firstWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi("design1.ui", self)
+        self.secondWindow = None
+        uic.loadUi("design1.ui", self)  # initializing design for mode choosing menu
+        self.setFixedWidth(400)
+        self.setFixedHeight(500)
         self.setWindowIcon(QtGui.QIcon('txeturka.png'))
         self.easyButton = self.findChild(QPushButton, "pushButton_1")
         self.hardButton = self.findChild(QPushButton, "pushButton_2")
@@ -30,7 +33,9 @@ class easyMode(QMainWindow):
     def __init__(self):
         self.gameOver = 0
         super(easyMode, self).__init__()
-        uic.loadUi("design.ui", self)
+        uic.loadUi("design.ui", self)  # initializing design for easy mode
+        self.setFixedWidth(400)
+        self.setFixedHeight(500)
         self.setWindowTitle("Tic Tac Toe EASY v1.0.0 for PicsArt Lab")
         self.setWindowIcon(QtGui.QIcon('txeturka.png'))
         self.cell1 = self.findChild(QPushButton, "pushButton_1")
@@ -56,6 +61,9 @@ class easyMode(QMainWindow):
         self.startButton.clicked.connect(self.reset)
         self.show()
 
+    """
+    checkWin function checking if the someone win this game
+    """
     def checkWin(self):
         if self.cell1.text() == self.cell4.text() and self.cell1.text() == self.cell7.text() and \
                 self.cell1.text() != "":
@@ -90,58 +98,89 @@ class easyMode(QMainWindow):
             self.win(self.cell3, self.cell5, self.cell7)
             return self.cell3.text()
 
-    def win(self, a, b, c):
+    """
+    win function change the style of sheet if someone win
+    
+    :param firstCell: first cell of winner sign
+    :param secondCell: second cell of winner sign
+    :param thirdCell: third cell of winner sign
+    :return winner sign 
+    """
+    def win(self, firstCell, secondCell, thirdCell):
         self.gameOver = 1
-        a.setStyleSheet('QPushButton {color: black;}')
-        b.setStyleSheet('QPushButton {color: black;}')
-        c.setStyleSheet('QPushButton {color: black;}')
-        self.label.setText(f"{a.text()} Win!")
+        firstCell.setStyleSheet('QPushButton {color: black;}')
+        secondCell.setStyleSheet('QPushButton {color: black;}')
+        thirdCell.setStyleSheet('QPushButton {color: black;}')
+        self.label.setText(f"{firstCell.text()} Win!")
         self.disable()
-        return a.text
+        return firstCell.text
 
+    """
+    disable function disable all buttons, if the game overed
+    """
     def disable(self):
-        button_list = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
-                       self.cell9]
-        for b in button_list:
-            b.setEnabled(False)
+        buttonList = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
+                      self.cell9]
+        for button in buttonList:
+            button.setEnabled(False)
 
+
+    #getAvailableCell function give's us a free cells, where AI can take put the sign
     def getAvailableCells(self):
-        button_list = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
+        buttonList = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
                        self.cell9]
         emptyCells = []
-        for i in button_list:
-            if i.text() == "":
-                emptyCells.append(i)
+        for button in buttonList:
+            if button.text() == "":
+                emptyCells.append(button)
         return emptyCells
 
     def AITurn(self):
         QtTest.QTest.qWait(180)
         empyCells = self.getAvailableCells()
         if empyCells and self.gameOver == 0:
-            clicked_button = random.choice(empyCells)
-            clicked_button.setText("O")
-            clicked_button.setEnabled(False)
+            clickedButton = random.choice(empyCells)
+            clickedButton.setText("O")
+            clickedButton.setEnabled(False)
             self.label.setText("X's Turn")
         else:
             self.label.setText("Tie! Well played.")
 
-    def clicker(self, clicked_button):
+    """
+    clicker function is for changing style, then the player click on button
+    
+    :param clickedButton
+    :return none
+    """
+    def clicker(self, clickedButton):
         self.label.setText("O's Turn")
-        clicked_button.setText("X")
-        clicked_button.setEnabled(False)
+        clickedButton.setText("X")
+        clickedButton.setEnabled(False)
         self.checkWin()
         self.AITurn()
         self.checkWin()
 
+    """
+    reset function is for setting againg available cells and returning modechoosing menu
+    """
     def reset(self):
         self.gameOver = 0
-        button_list = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
+        buttonList = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
                        self.cell9]
-        for button in button_list:
+        for button in buttonList:
             button.setText("")
             button.setEnabled(True)
             button.setStyleSheet('QPushButton {color: gray;}')
         self.label.setText("Click on any cell to start game")
+        self.hide()
+        self.openChooseMenu()
+
+    """
+    openChooseMenu function is for opening mode choosing menu
+    """
+    def openChooseMenu(self):
+        self.firstWindow = firstWindow()
+        self.firstWindow.show()
 
 
 class hardMode(QMainWindow):
@@ -149,6 +188,8 @@ class hardMode(QMainWindow):
         self.gameOver = 0
         super(hardMode, self).__init__()
         uic.loadUi("design.ui", self)
+        self.setFixedWidth(400)
+        self.setFixedHeight(500)
         self.setWindowTitle("Tic Tac Toe HARD v1.0.0 for PicsArt Lab")
         self.setWindowIcon(QtGui.QIcon('txeturka.png'))
         self.cell1 = self.findChild(QPushButton, "pushButton_1")
@@ -207,9 +248,15 @@ class hardMode(QMainWindow):
                 self.cell3.text() != "":
             self.win(self.cell3, self.cell5, self.cell7)
             return self.cell3.text()
-        if self.getAvailableCells() == []:
+        if not self.getAvailableCells():
             self.label.setText("TIE, well played")
 
+    """
+    checkWin2 function checking if any player win without calling function win(). Calling in minimax algorithm.
+    
+    :param none
+    :return winner sign
+    """
     def checkWin2(self):
         if self.cell1.text() == self.cell4.text() and self.cell1.text() == self.cell7.text() and \
                 self.cell1.text() != "":
@@ -238,48 +285,94 @@ class hardMode(QMainWindow):
         else:
             return "d"
 
-    def win(self, a, b, c):
+    """
+    checkWin function checking if the someone win this game
+    
+    :param none
+    :return winner's sign
+    """
+    def win(self, firstCell, secondCell, thirdCell):
         self.gameOver = 1
-        a.setStyleSheet('QPushButton {color: black;}')
-        b.setStyleSheet('QPushButton {color: black;}')
-        c.setStyleSheet('QPushButton {color: black;}')
-        self.label.setText(f"{a.text()} Win!")
+        firstCell.setStyleSheet('QPushButton {color: black;}')
+        secondCell.setStyleSheet('QPushButton {color: black;}')
+        thirdCell.setStyleSheet('QPushButton {color: black;}')
+        self.label.setText(f"{firstCell.text()} Win!")
         self.disable()
-        return a.text
+        return firstCell.text
 
+    """
+    disable function is for disabling buttons after game over
+    
+    :param none
+    :return none 
+    """
     def disable(self):
-        button_list = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
+        buttonList = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
                        self.cell9]
-        for b in button_list:
-            b.setEnabled(False)
+        for button in buttonList:
+            button.setEnabled(False)
 
+    """
+    getAvailableCells function checking list of available buttons
+    
+    :param none
+    :return list of available cells
+    """
     def getAvailableCells(self):
-        button_list = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
+        buttonList = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
                        self.cell9]
         emptyCells = []
-        for i in button_list:
-            if i.text() == "":
-                emptyCells.append(i)
+        for button in buttonList:
+            if button.text() == "":
+                emptyCells.append(button)
         return emptyCells
 
-    def clicker(self, clicked_button):
-        clicked_button.setText("X")
-        clicked_button.setEnabled(False)
+    """
+    clicker function is for setting sign on clicked button
+    :param clickedButton
+    :return none
+    """
+    def clicker(self, clickedButton):
+        clickedButton.setText("X")
+        clickedButton.setEnabled(False)
         self.checkWin()
         self.label.setText("O's Turn")
         self.AITurn()
         self.checkWin()
 
+    """
+    reset function for reseting design after game over
+    
+    :param none
+    :return none
+    """
     def reset(self):
         self.gameOver = 0
-        button_list = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
+        buttonList = [self.cell1, self.cell2, self.cell3, self.cell4, self.cell5, self.cell6, self.cell7, self.cell8,
                        self.cell9]
-        for button in button_list:
+        for button in buttonList:
             button.setText("")
             button.setEnabled(True)
             button.setStyleSheet('QPushButton {color: gray;}')
         self.label.setText("Click on any cell to start game")
+        self.hide()
+        self.openChooseMenu()
 
+    """
+    openChooseMenu is for opening modechoosing menu
+    
+    :param none
+    :return none
+    """
+    def openChooseMenu(self):
+        self.firstWindow = firstWindow()
+        self.firstWindow.show()
+
+    """
+    getScore function is for game situation rating
+    :param none
+    :return rate of game situation
+    """
     def getScore(self):
         winner = self.checkWin2()
         if winner == "X":
@@ -289,44 +382,51 @@ class hardMode(QMainWindow):
         else:
             return 0
 
+    """
+    miniMax function get best choose for putting sign by minimax algorithm. Minimax algorithm is generating all variations and by getScore() function choose the best variation.
+    
+    :param currentPlay
+    :return button for best move
+    """
     def miniMax(self, currentPlayer):
         score = self.getScore()
         if score != 0:
             return score
-        elif self.getAvailableCells() == []:
+        elif not self.getAvailableCells():
             return 0
         if currentPlayer == 1:
             bestMove = -1000000
-            for i in self.getAvailableCells():
-                i.setText("0")
+            for cell in self.getAvailableCells():
+                cell.setText("0")
                 bestMove = max(bestMove, self.miniMax(1 - currentPlayer))
-                i.setText("")
+                cell.setText("")
             return bestMove
         else:
             bestMove = 100000000
-            for i in self.getAvailableCells():
-                i.setText("X")
+            for cell in self.getAvailableCells():
+                cell.setText("X")
                 bestMove = min(bestMove, self.miniMax(1 - currentPlayer))
-                i.setText("")
+                cell.setText("")
             return bestMove
 
     def AITurn(self):
         QtTest.QTest.qWait(180)
         emptyCells = self.getAvailableCells()
         bestMove = -100000
-        if emptyCells == []:
+        if not emptyCells:
             return
-        a = emptyCells[0]
-        for i in emptyCells:
-            i.setText("0")
-            current_score = self.miniMax(0)
-            i.setText("")
-            if current_score > bestMove:
-                bestMove = current_score
-                a = i
-        a.setText("0")
-        a.setEnabled(False)
+        button = emptyCells[0]
+        for cell in emptyCells:
+            cell.setText("0")
+            currentScore = self.miniMax(0)
+            cell.setText("")
+            if currentScore > bestMove:
+                bestMove = currentScore
+                button = cell
+        button.setText("0")
+        button.setEnabled(False)
         self.label.setText("X's turn")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
