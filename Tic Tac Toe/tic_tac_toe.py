@@ -11,7 +11,6 @@ class firstWindow(QMainWindow):
         uic.loadUi("design1.ui", self)  # initializing design for mode choosing menu
         self.setFixedWidth(400)
         self.setFixedHeight(500)
-        # This photo is logo, that going to be showen on only Windows system. Does not work on Linux and MacOS
         self.setWindowIcon(QtGui.QIcon('txeturka.png'))
         self.easyButton = self.findChild(QPushButton, "pushButton_1")
         self.hardButton = self.findChild(QPushButton, "pushButton_2")
@@ -140,10 +139,10 @@ class easyMode(QMainWindow):
         QtTest.QTest.qWait(180)
         empyCells = self.getAvailableCells()
         if empyCells and self.gameOver == 0:
+            self.label.setText("X's Turn")
             clickedButton = random.choice(empyCells)
             clickedButton.setText("O")
             clickedButton.setEnabled(False)
-            self.label.setText("X's Turn")
         else:
             self.label.setText("Tie! Well played.")
 
@@ -334,10 +333,10 @@ class hardMode(QMainWindow):
     :return none
     """
     def clicker(self, clickedButton):
+        self.label.setText("O's Turn")
         clickedButton.setText("X")
         clickedButton.setEnabled(False)
         self.checkWin()
-        self.label.setText("O's Turn")
         self.AITurn()
         self.checkWin()
 
@@ -410,6 +409,12 @@ class hardMode(QMainWindow):
                 cell.setText("")
             return bestMove
 
+    """
+    AITurn is function, that by minimax() function put sign 
+    
+    :param none
+    :return none
+    """
     def AITurn(self):
         QtTest.QTest.qWait(180)
         emptyCells = self.getAvailableCells()
@@ -424,9 +429,9 @@ class hardMode(QMainWindow):
             if currentScore > bestMove:
                 bestMove = currentScore
                 button = cell
+        self.label.setText("X's turn")
         button.setText("0")
         button.setEnabled(False)
-        self.label.setText("X's turn")
 
 
 if __name__ == "__main__":
